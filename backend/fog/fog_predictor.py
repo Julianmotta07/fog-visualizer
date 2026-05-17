@@ -1,3 +1,23 @@
+"""
+fog_predictor.py
+-----------------
+Modelo compuesto FOG — votación ponderada
+
+    P_final = 0.35 × P(SVM) + 0.65 × P(XGBoost)
+    FOG si P_final >= 0.30
+
+Modelo A descartado (peso = 0).
+
+Modelos esperados en fog/models/:
+    model_b.pkl   ← ModeloB_E6_SVM.pkl       (renombrado)
+    model_c.pkl   ← ModeloC_E6_XGBoost.pkl   (renombrado)
+    scaler_b.pkl  ← ScalerB_E6.pkl           (renombrado)
+    scaler_c.pkl  ← ScalerC_E6.pkl           (renombrado)
+
+Salida por ventana:
+    {"timestamp": <int ms>, "fog": <0|1>, "prob": <float 0-1>}
+"""
+
 import logging
 import os
 from typing import List, Optional
@@ -7,14 +27,17 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
-FOG_THRESHOLD = 0.15
+WEIGHT_B           = 0.35
+WEIGHT_C           = 0.65
+ENSEMBLE_THRESHOLD = 0.30
+
 _MODELS_DIR = os.path.join(os.path.dirname(__file__), "models")
 
 
 def _load(filename: str):
     path = os.path.join(_MODELS_DIR, filename)
     if not os.path.exists(path):
-        raise FileNotFoundError(f"Archivo no encontrado: {path}")
+        raise FileNotFoundError(f"Archivo no encontrado: {path}. Coloca los .pkl en {_MODELS_DIR}")
     return joblib.load(path)
 
 
@@ -23,7 +46,7 @@ def _get_feature_names(model) -> list:
         return list(model.feature_names_in_)
     if hasattr(model, "_feature_names"):
         return list(model._feature_names)
-    raise AttributeError(f"El modelo {type(model).__name__} no tiene atributo de nombres de features.")
+    raise AttributeError(f"El modelo {type(model).__name__} no tiene nombres de features.")
 
 
 def _build_matrix(feature_dicts: list, feature_names: list) -> np.ndarray:
@@ -34,81 +57,76 @@ def _build_matrix(feature_dicts: list, feature_names: list) -> np.ndarray:
     return X
 
 
-def _run_inference(model, scaler, feature_dicts: list, threshold: float) -> list:
-    if not feature_dicts:
-        return []
+def _get_probs(model, scaler, feature_dicts: list) -> tuple:
+    """Retorna (timestamps, probs_array)."""
     feature_names = _get_feature_names(model)
-    timestamps = [fd.get("timestamp", 0.0) for fd in feature_dicts]
-    clean_dicts = [{k: v for k, v in fd.items() if k != "timestamp"} for fd in feature_dicts]
-    X = _build_matrix(clean_dicts, feature_names)
-    X_scaled = scaler.transform(X)
-    probs = model.predict_proba(X_scaled)[:, 1]
-    return [
-        {"timestamp": int(ts), "fog": int(p >= threshold), "prob": round(float(p), 4)}
-        for ts, p in zip(timestamps, probs)
-    ]
+    timestamps    = [fd.get("timestamp", 0.0) for fd in feature_dicts]
+    clean_dicts   = [{k: v for k, v in fd.items() if k != "timestamp"} for fd in feature_dicts]
+    X             = _build_matrix(clean_dicts, feature_names)
+    X_scaled      = scaler.transform(X)
+    probs         = model.predict_proba(X_scaled)[:, 1]
+    return timestamps, probs
 
 
 class FogPredictor:
-    def __init__(self, threshold: float = FOG_THRESHOLD):
-        self.threshold = threshold
-        self._model_a = self._scaler_a = None
+    """Predictor FOG — modelo compuesto (wB=0.35, wC=0.65, umbral=0.30)."""
+
+    def __init__(self):
         self._model_b = self._scaler_b = None
         self._model_c = self._scaler_c = None
 
-    def _ensure_a(self):
-        if self._model_a is None:
-            self._model_a = _load("model_a.pkl")
-            self._scaler_a = _load("scaler_a.pkl")
-            logger.info("Modelo FOG A cargado (%s).", type(self._model_a).__name__)
-
     def _ensure_b(self):
         if self._model_b is None:
-            self._model_b = _load("model_b.pkl")
+            self._model_b  = _load("model_b.pkl")
             self._scaler_b = _load("scaler_b.pkl")
             logger.info("Modelo FOG B cargado (%s).", type(self._model_b).__name__)
 
     def _ensure_c(self):
         if self._model_c is None:
-            self._model_c = _load("model_c.pkl")
+            self._model_c  = _load("model_c.pkl")
             self._scaler_c = _load("scaler_c.pkl")
             logger.info("Modelo FOG C cargado (%s).", type(self._model_c).__name__)
 
-    def predict_model_a(self, feature_dicts: list) -> Optional[List[dict]]:
-        try:
-            self._ensure_a()
-            return _run_inference(self._model_a, self._scaler_a, feature_dicts, self.threshold)
-        except FileNotFoundError as e:
-            logger.warning("Modelo A no disponible: %s", e)
-            return None
-        except Exception as e:
-            logger.error("Error en predicción FOG modelo A: %s", e)
-            return None
-
-    def predict_model_b(self, feature_dicts: list) -> Optional[List[dict]]:
+    def predict_ensemble(self, features_b: list, features_c: list) -> Optional[List[dict]]:
+        """
+        Calcula P_final = 0.35*P(B) + 0.65*P(C) y aplica umbral 0.30.
+        Retorna lista de {timestamp, fog, prob} o None si falla.
+        """
         try:
             self._ensure_b()
-            return _run_inference(self._model_b, self._scaler_b, feature_dicts, self.threshold)
-        except FileNotFoundError as e:
-            logger.warning("Modelo B no disponible: %s", e)
-            return None
-        except Exception as e:
-            logger.error("Error en predicción FOG modelo B: %s", e)
-            return None
-
-    def predict_model_c(self, feature_dicts: list) -> Optional[List[dict]]:
-        try:
             self._ensure_c()
-            return _run_inference(self._model_c, self._scaler_c, feature_dicts, self.threshold)
+
+            if not features_b or not features_c:
+                return None
+
+            n          = min(len(features_b), len(features_c))
+            features_b = features_b[:n]
+            features_c = features_c[:n]
+
+            timestamps, probs_b = _get_probs(self._model_b, self._scaler_b, features_b)
+            _,          probs_c = _get_probs(self._model_c, self._scaler_c, features_c)
+
+            probs_ensemble = WEIGHT_B * probs_b + WEIGHT_C * probs_c
+
+            return [
+                {
+                    "timestamp": int(ts),
+                    "fog":       int(p >= ENSEMBLE_THRESHOLD),
+                    "prob":      round(float(p), 4),
+                }
+                for ts, p in zip(timestamps, probs_ensemble)
+            ]
+
         except FileNotFoundError as e:
-            logger.warning("Modelo C no disponible: %s", e)
+            logger.warning("Modelo no disponible: %s", e)
             return None
         except Exception as e:
-            logger.error("Error en predicción FOG modelo C: %s", e)
+            logger.error("Error en predicción FOG ensemble: %s", e)
             return None
 
 
 _predictor: Optional[FogPredictor] = None
+
 
 def get_predictor() -> FogPredictor:
     global _predictor

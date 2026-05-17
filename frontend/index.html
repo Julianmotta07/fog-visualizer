@@ -15,8 +15,8 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --bg:#0a0c10; --surface:#111318; --border:#1e2230; --border2:#2a3048;
-    --text:#e2e8f0; --muted:#5a6480; --accent:#4f8ef7; --a-glow:rgba(79,142,247,0.18);
-    --green:#34d399; --orange:#fb923c; --red:#f87171;
+    --text:#e2e8f0; --muted:#5a6480; --accent:#6C3FC5; --a-glow:rgba(108,63,197,0.18);
+    --green:#34d399; --red:#f87171;
   }
   html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;}
   #root{min-height:100vh;display:flex;flex-direction:column;}
@@ -30,7 +30,7 @@
   .sidebar-header{padding:16px 20px 12px;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
   .file-list{overflow-y:auto;flex:1;padding:8px;}
   .file-item{padding:10px 12px;border-radius:8px;cursor:pointer;margin-bottom:4px;border:1px solid transparent;transition:all 0.15s ease;}
-  .file-item:hover{background:rgba(79,142,247,0.06);border-color:var(--border2);}
+  .file-item:hover{background:rgba(108,63,197,0.06);border-color:var(--border2);}
   .file-item.active{background:var(--a-glow);border-color:var(--accent);}
   .file-name{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text);word-break:break-all;line-height:1.5;}
   .file-item.active .file-name{color:var(--accent);}
@@ -44,19 +44,10 @@
   .meta-item{display:flex;flex-direction:column;gap:2px;}
   .meta-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
   .meta-value{font-size:14px;font-weight:600;color:var(--text);}
-  .badges{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
-  .badge{padding:5px 12px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;border:1px solid;}
-  .badge-a{color:#4f8ef7;border-color:rgba(79,142,247,.4);background:rgba(79,142,247,.08);}
-  .badge-b{color:#fb923c;border-color:rgba(251,146,60,.4);background:rgba(251,146,60,.08);}
-  .badge-c{color:#34d399;border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.08);}
-  .badge-none{color:var(--muted);border-color:var(--border);background:transparent;}
+  .badge{display:inline-flex;align-items:center;padding:5px 12px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;border:1px solid;margin-bottom:24px;color:#6C3FC5;border-color:rgba(108,63,197,0.4);background:rgba(108,63,197,0.08);}
   .chart-container{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px 20px 16px;margin-bottom:24px;}
   .chart-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
   .chart-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:20px;}
-  .loading{display:flex;align-items:center;gap:10px;padding:40px;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);}
-  .spinner{width:18px;height:18px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--accent);animation:spin .8s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .error-box{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--red);}
   .stats-row{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
   .stat-card{flex:1;min-width:120px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
   .stat-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
@@ -64,10 +55,12 @@
   .stat-unit{font-size:11px;color:var(--muted);font-weight:400;margin-left:4px;}
   .stat-fog{color:var(--red);}
   .stat-ok{color:var(--green);}
+  .loading{display:flex;align-items:center;gap:10px;padding:40px;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);}
+  .spinner{width:18px;height:18px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--accent);animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .error-box{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--red);}
   .custom-tooltip{background:#1a1f2e;border:1px solid var(--border2);border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;}
   .tt-time{color:var(--muted);margin-bottom:6px;}
-  .tt-row{display:flex;align-items:center;gap:6px;margin-bottom:3px;}
-  .tt-dot{width:6px;height:6px;border-radius:50%;}
   ::-webkit-scrollbar{width:4px;}
   ::-webkit-scrollbar-track{background:transparent;}
   ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
@@ -78,107 +71,102 @@
 <script type="text/babel">
 const {
   LineChart, Line, XAxis, YAxis, Tooltip,
-  Legend, ResponsiveContainer, ReferenceLine, CartesianGrid
+  ResponsiveContainer, ReferenceLine, CartesianGrid
 } = window.Recharts;
 
 const { useState, useEffect, useMemo } = React;
 
 const API = 'http://localhost:5000';
-const MODEL_COLORS = { 'Modelo A':'#4f8ef7', 'Modelo B':'#fb923c', 'Modelo C':'#34d399' };
 
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
+  const prob  = payload[0]?.value;
+  const isFog = prob >= 0.30;
   return (
     <div className="custom-tooltip">
       <div className="tt-time">{Number(label).toFixed(2)} s</div>
-      {payload.map(p => (
-        <div key={p.name} className="tt-row">
-          <div className="tt-dot" style={{background:p.color}}/>
-          <span style={{color:p.color,fontWeight:600}}>{p.name}</span>
-          <span style={{color:'#e2e8f0'}}>{(p.value*100).toFixed(1)}%</span>
-        </div>
-      ))}
+      <div style={{ color: isFog ? '#f87171' : '#34d399', fontWeight: 600 }}>
+        P(FOG): {(prob * 100).toFixed(1)}%{isFog ? ' — FOG' : ''}
+      </div>
     </div>
   );
 }
 
-function Stats({ chartData, label }) {
-  const series = chartData.filter(d => d[label] !== undefined);
-  if (!series.length) return null;
-  const fogCount = series.filter(d => d[label] >= 0.15).length;
-  const pct = ((fogCount/series.length)*100).toFixed(1);
-  const avg = (series.reduce((s,d)=>s+d[label],0)/series.length*100).toFixed(1);
-  const isFog = parseFloat(pct) > 20;
+function Stats({ chartData }) {
+  const total    = chartData.length;
+  const fogCount = chartData.filter(d => d.prob >= 0.30).length;
+  const pct      = total > 0 ? ((fogCount / total) * 100).toFixed(1) : '0.0';
+  const avg      = total > 0 ? (chartData.reduce((s, d) => s + d.prob, 0) / total * 100).toFixed(1) : '0.0';
+  const dur      = total > 0 ? (chartData[total - 1]?.t || 0).toFixed(1) : '0';
+  const isFog    = parseFloat(pct) > 20;
+
   return (
-    <div className="stat-card">
-      <div className="stat-label">{label}</div>
-      <div className={`stat-value ${isFog?'stat-fog':'stat-ok'}`}>
-        {pct}<span className="stat-unit">% FOG</span>
+    <div className="stats-row">
+      <div className="stat-card">
+        <div className="stat-label">% Ventanas FOG</div>
+        <div className={`stat-value ${isFog ? 'stat-fog' : 'stat-ok'}`}>
+          {pct}<span className="stat-unit">%</span>
+        </div>
+        <div style={{fontFamily:'JetBrains Mono',fontSize:10,color:'#5a6480',marginTop:4}}>prob. media {avg}%</div>
       </div>
-      <div style={{fontFamily:'JetBrains Mono',fontSize:10,color:'#5a6480',marginTop:4}}>
-        prob. media {avg}%
+      <div className="stat-card">
+        <div className="stat-label">Ventanas</div>
+        <div className="stat-value">{total}<span className="stat-unit">total</span></div>
+        <div style={{fontFamily:'JetBrains Mono',fontSize:10,color:'#5a6480',marginTop:4}}>~{dur} s duración</div>
+      </div>
+      <div className="stat-card">
+        <div className="stat-label">Ventanas FOG</div>
+        <div className={`stat-value ${fogCount > 0 ? 'stat-fog' : 'stat-ok'}`}>
+          {fogCount}<span className="stat-unit">/{total}</span>
+        </div>
+        <div style={{fontFamily:'JetBrains Mono',fontSize:10,color:'#5a6480',marginTop:4}}>umbral ≥ 30%</div>
       </div>
     </div>
   );
 }
 
-function FogChart({ fog }) {
+function FogChart({ ensemble }) {
   const chartData = useMemo(() => {
-    if (!fog) return [];
-    const tsMap = {};
-    const add = (key, label) => {
-      const s = fog[key]; if (!s) return;
-      s.forEach(p => {
-        if (!tsMap[p.timestamp]) tsMap[p.timestamp] = {timestamp:p.timestamp};
-        tsMap[p.timestamp][label] = p.prob;
-      });
-    };
-    add('model_a','Modelo A'); add('model_b','Modelo B'); add('model_c','Modelo C');
-    const sorted = Object.values(tsMap).sort((a,b)=>a.timestamp-b.timestamp);
-    if (!sorted.length) return [];
-    const t0 = sorted[0].timestamp;
-    return sorted.map(p=>({...p, t:parseFloat(((p.timestamp-t0)/1000).toFixed(2))}));
-  }, [fog]);
-
-  const available = ['Modelo A','Modelo B','Modelo C'].filter(
-    m => chartData.some(d => d[m] !== undefined)
-  );
+    if (!ensemble || ensemble.length === 0) return [];
+    const t0 = ensemble[0].timestamp;
+    return ensemble.map(p => ({
+      t:    parseFloat(((p.timestamp - t0) / 1000).toFixed(2)),
+      prob: p.prob,
+      fog:  p.fog,
+    }));
+  }, [ensemble]);
 
   if (!chartData.length) return <div className="error-box">No hay datos de ventanas disponibles.</div>;
 
   return (
     <>
-      <div className="stats-row">
-        {available.map(m => <Stats key={m} chartData={chartData} label={m}/>)}
-        <div className="stat-card">
-          <div className="stat-label">Ventanas</div>
-          <div className="stat-value">{chartData.length}<span className="stat-unit">total</span></div>
-          <div style={{fontFamily:'JetBrains Mono',fontSize:10,color:'#5a6480',marginTop:4}}>
-            duración ~{(chartData[chartData.length-1]?.t||0).toFixed(1)} s
-          </div>
-        </div>
-      </div>
+      <Stats chartData={chartData} />
       <div className="chart-container">
-        <div className="chart-title">Probabilidad FOG por ventana temporal</div>
-        <div className="chart-sub">Subtest: Marcha normal · Ventana 1 s / 50% solapamiento</div>
+        <div className="chart-title">Probabilidad FOG — Modelo Compuesto</div>
+        <div className="chart-sub">wB=0.35 · wC=0.65 · Umbral: 30% · Ventana: 2s / 75% solapamiento</div>
         <ResponsiveContainer width="100%" height={340}>
           <LineChart data={chartData} margin={{top:4,right:24,left:0,bottom:32}}>
-            <CartesianGrid strokeDasharray="3 6" stroke="#1e2230"/>
-            <XAxis dataKey="t" type="number" domain={['dataMin','dataMax']}
+            <CartesianGrid strokeDasharray="3 6" stroke="#1e2230" />
+            <XAxis
+              dataKey="t" type="number" domain={['dataMin','dataMax']}
               tick={{fontFamily:'JetBrains Mono',fontSize:10,fill:'#5a6480'}}
-              label={{value:'Tiempo (s)',position:'insideBottom',offset:-14,fill:'#5a6480',fontFamily:'JetBrains Mono',fontSize:11}}/>
-            <YAxis domain={[0,1]} tickFormatter={v=>`${(v*100).toFixed(0)}%`}
-              tick={{fontFamily:'JetBrains Mono',fontSize:10,fill:'#5a6480'}} width={50}/>
-            <Tooltip content={<CustomTooltip/>} isAnimationActive={false}/>
-            <Legend verticalAlign="top" align="right"
-              wrapperStyle={{fontFamily:'JetBrains Mono',fontSize:11,paddingBottom:8}} iconType="circle"/>
-            <ReferenceLine y={0.15} stroke="#f87171" strokeDasharray="6 3" strokeWidth={1.5}
-              label={{value:'Umbral 15%',position:'insideTopRight',fill:'#f87171',fontFamily:'JetBrains Mono',fontSize:9}}/>
-            {available.map(m=>(
-              <Line key={m} type="monotone" dataKey={m} stroke={MODEL_COLORS[m]}
-                strokeWidth={2} dot={false} activeDot={{r:4,strokeWidth:0}}
-                isAnimationActive={false} connectNulls/>
-            ))}
+              label={{value:'Tiempo (s)',position:'insideBottom',offset:-14,fill:'#5a6480',fontFamily:'JetBrains Mono',fontSize:11}}
+            />
+            <YAxis
+              domain={[0,1]} tickFormatter={v=>`${(v*100).toFixed(0)}%`}
+              tick={{fontFamily:'JetBrains Mono',fontSize:10,fill:'#5a6480'}} width={50}
+            />
+            <Tooltip content={<CustomTooltip />} isAnimationActive={false} />
+            <ReferenceLine
+              y={0.30} stroke="#f87171" strokeDasharray="6 3" strokeWidth={1.5}
+              label={{value:'Umbral 30%',position:'insideTopRight',fill:'#f87171',fontFamily:'JetBrains Mono',fontSize:9}}
+            />
+            <Line
+              type="monotone" dataKey="prob" name="Modelo Compuesto"
+              stroke="#6C3FC5" strokeWidth={2}
+              dot={false} activeDot={{r:4,strokeWidth:0}}
+              isAnimationActive={false}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -195,8 +183,8 @@ function Sidebar({ files, selected, onSelect }) {
     <div className="sidebar">
       <div className="sidebar-header">Archivos DGI · {files.length}</div>
       <div className="file-list">
-        {files.length===0 && <div className="empty-list">No hay archivos JSON<br/>en la carpeta data/</div>}
-        {files.map(f=>(
+        {files.length === 0 && <div className="empty-list">No hay archivos JSON<br/>en la carpeta data/</div>}
+        {files.map(f => (
           <div key={f} className={`file-item ${selected===f?'active':''}`} onClick={()=>onSelect(f)}>
             <div className="file-name">{f}</div>
             <div className="file-date">{parseDate(f)}</div>
@@ -208,35 +196,35 @@ function Sidebar({ files, selected, onSelect }) {
 }
 
 function App() {
-  const [files,setFiles]     = useState([]);
-  const [selected,setSelected] = useState(null);
-  const [loading,setLoading] = useState(false);
-  const [error,setError]     = useState(null);
-  const [result,setResult]   = useState(null);
+  const [files,    setFiles]    = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [loading,  setLoading]  = useState(false);
+  const [error,    setError]    = useState(null);
+  const [result,   setResult]   = useState(null);
 
-  useEffect(()=>{
+  useEffect(() => {
     fetch(`${API}/api/files`).then(r=>r.json()).then(d=>{
       setFiles(d.files||[]);
       if(d.files?.length) setSelected(d.files[0]);
     }).catch(()=>setFiles([]));
-  },[]);
+  }, []);
 
-  useEffect(()=>{
-    if(!selected) return;
+  useEffect(() => {
+    if (!selected) return;
     setLoading(true); setError(null); setResult(null);
     fetch(`${API}/api/fog/${encodeURIComponent(selected)}`)
-      .then(r=>r.json().then(d=>({ok:r.ok,d})))
-      .then(({ok,d})=>{ if(!ok) setError(d.error||'Error'); else setResult(d); })
-      .catch(e=>setError(e.message))
-      .finally(()=>setLoading(false));
-  },[selected]);
+      .then(r => r.json().then(d => ({ ok: r.ok, d })))
+      .then(({ ok, d }) => { if (!ok) setError(d.error||'Error'); else setResult(d); })
+      .catch(e => setError(e.message))
+      .finally(() => setLoading(false));
+  }, [selected]);
 
   return (
     <>
       <div className="header">
         <div className="header-dot"/>
         <div className="header-title">FOG Visualizer</div>
-        <div className="header-sub">Freezing of Gait · Pipeline de inferencia</div>
+        <div className="header-sub">Modelo Compuesto · wB=0.35 · wC=0.65 · Umbral 30%</div>
       </div>
       <div className="layout">
         <Sidebar files={files} selected={selected} onSelect={setSelected}/>
@@ -247,9 +235,7 @@ function App() {
               <div className="empty-state-text">Selecciona un archivo DGI para visualizar</div>
             </div>
           )}
-          {selected && loading && (
-            <div className="loading"><div className="spinner"/>Procesando pipeline FOG…</div>
-          )}
+          {selected && loading && <div className="loading"><div className="spinner"/>Procesando modelo compuesto…</div>}
           {selected && !loading && error && <div className="error-box">⚠ {error}</div>}
           {selected && !loading && result && (
             <>
@@ -265,16 +251,8 @@ function App() {
                   </div>
                 </div>
               </div>
-              <div className="badges">
-                {['model_a','model_b','model_c'].map((k,i)=>{
-                  const labels=['Modelo A · Logistic Regression','Modelo B · SVM','Modelo C · XGBoost'];
-                  const cls=['badge-a','badge-b','badge-c'];
-                  return result.fog[k]
-                    ? <span key={k} className={`badge ${cls[i]}`}>✓ {labels[i]}</span>
-                    : <span key={k} className="badge badge-none">✗ {labels[i].split(' · ')[0]} sin datos</span>;
-                })}
-              </div>
-              <FogChart fog={result.fog}/>
+              <div className="badge">✓ Modelo Compuesto · SVM (B) + XGBoost (C)</div>
+              {result.fog?.ensemble && <FogChart ensemble={result.fog.ensemble}/>}
             </>
           )}
         </div>
